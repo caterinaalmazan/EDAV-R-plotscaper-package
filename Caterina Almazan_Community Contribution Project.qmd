@@ -1,0 +1,69 @@
+---
+title: "Caterina Almazan_Community Contribution Project"
+format: html
+editor: visual
+---
+
+## Plotscaper
+
+Plotscaper is an R package designed for creating interactive figures for data exploration. All plots in `plotscaper` are automatically linked and support several kinds of interactive features: including selection, zooming, panning, and parameter manipulation. The figures can be interacted with either manually, using a mouse and a keyboard, or by running code from inside an active R session.
+
+```{r}
+install.packages("plotscaper")
+```
+
+## Ozone & Environmental data demo
+
+```{r}
+library(plotscaper)
+
+names(airquality) <- c("ozone", "solar radiation", "wind", 
+                       "temperature", "month", "day")
+
+create_schema(airquality) |>
+  add_scatterplot(c("solar radiation", "ozone")) |>
+  add_barplot(c("day", "ozone"), list(reducer = "max")) |>
+  add_histogram(c("wind")) |>
+  add_pcoords(names(airquality)[1:4]) |>
+  render()
+```
+
+## Sacramento demo
+
+```{r}
+install.packages("caret")
+```
+
+```{r}
+library(plotscaper)
+library(caret)
+library(dplyr)
+
+data("Sacramento")
+
+dplyr::glimpse(Sacramento)
+
+```
+
+```{r}
+create_schema(Sacramento) |>
+  add_scatterplot(c("longitude", "latitude"), list(ratio = 1)) |>
+  add_barplot(c("city")) |>
+  add_fluctplot(c("beds", "baths")) |>
+  add_histogram(c("sqft")) |>
+  render()
+  #select_cases(1:100)
+```
+
+```{r}
+schema <- create_schema(Sacramento) |>
+  add_scatterplot(c("longitude", "latitude"), list(ratio = 1)) |>
+  add_barplot(c("city")) |>
+  add_fluctplot(c("beds", "baths")) |>
+  add_histogram(c("sqft")) |>
+  select_cases(1:100)
+
+scene <- schema |> render()
+
+scene |> add_scatterplot(c("sqft", "price"))
+```
